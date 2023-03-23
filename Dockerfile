@@ -10,6 +10,7 @@ ADD https://deb.nodesource.com/setup_14.x /tmp
 ADD https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb /tmp
 ADD https://packages.microsoft.com/config/ubuntu/21.04/packages-microsoft-prod.deb /tmp
 ADD http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb /tmp
+ADD https://repo1.maven.org/maven2/org/yaml/snakeyaml/2.0/snakeyaml-2.0.jar /tmp
 COPY dist/bzt*whl /tmp
 
 WORKDIR /tmp
@@ -74,6 +75,10 @@ RUN mkdir -p /etc/bzt.d \
 ### remove unused pem files
 WORKDIR /root/.bzt/python-packages/3.10.6/gevent/tests
 RUN rm -rf *.pem
+
+#fix snakeyaml vuln. -> replacing jar in jmeter installation
+RUN rm /root/.bzt/jmeter-taurus/5.4.3/lib/snakeyaml-1.33.jar && mv /tmp/snakeyaml-2.0.jar /root/.bzt/jmeter-taurus/5.4.3/lib/
+
 
 # Fix npm vulnerabilites
 WORKDIR /root/.bzt/selenium-taurus/wdio/node_modules/recursive-readdir
