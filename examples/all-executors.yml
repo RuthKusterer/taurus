@@ -166,16 +166,16 @@ execution:
       - url: http://localhost:8000/
         label: JMeter
 
-#- executor: gatling  # Gatling
-#  concurrency: 1
-#  hold-for: 10s
-#  iterations: 10
-#  scenario:
-#    properties:
-#      dangerous: "I F S"
-#    requests:
-#      - url: http://localhost:8000/
-#        label: Gatling
+- executor: gatling  # Gatling
+  concurrency: 1
+  hold-for: 10s
+  iterations: 10
+  scenario:
+    properties:
+      dangerous: "I F S"
+    requests:
+      - url: http://localhost:8000/
+        label: Gatling
 
 - executor: siege  # http://localhost:8000/?tool=Siege
   concurrency: 1
