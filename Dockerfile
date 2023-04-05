@@ -8,9 +8,8 @@ ENV PIP_INSTALL="python3 -m pip install"
 
 ADD https://deb.nodesource.com/setup_14.x /tmp
 ADD https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb /tmp
-#ADD https://packages.microsoft.com/config/ubuntu/21.04/packages-microsoft-prod.deb /tmp
-#ADD https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb /tmp
-#ADD http://security.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.17_amd64.deb /tmp
+ADD https://packages.microsoft.com/config/ubuntu/21.04/packages-microsoft-prod.deb /tmp
+ADD http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb /tmp
 COPY dist/bzt*whl /tmp
 
 WORKDIR /tmp
@@ -27,7 +26,7 @@ RUN $PIP_INSTALL --user --upgrade pip pillow oauthlib pyjwt httplib2 numpy
 
 RUN $APT_UPDATE && $APT_INSTALL \
     unzip software-properties-common apt-transport-https \
-    openjdk-11-jdk xvfb siege apache2-utils ruby ruby-dev make nodejs locales tsung dotnet6
+    openjdk-11-jdk xvfb siege apache2-utils ruby ruby-dev make nodejs locales tsung
 
 # firefox repo - do not use snap
 RUN printf '%s\n' 'Package: firefox*' 'Pin: release o=Ubuntu*' 'Pin-Priority: -1' > /etc/apt/preferences.d/firefox-no-snap
@@ -49,11 +48,11 @@ RUN $APT_INSTALL ./google-chrome-stable_current_amd64.deb \
   && mv /opt/google/chrome/google-chrome /opt/google/chrome/_google-chrome
 
 # Get .NET Core
-#RUN dpkg -i libssl1.1_1.1.1f-1ubuntu2.17_amd64.deb
-#RUN $APT_INSTALL ./packages-microsoft-prod.deb \
-#   # Update is required because packages-microsoft-prod.deb installation add repositories for dotnet
-#   && $APT_UPDATE \
-#   && $APT_INSTALL dotnet-sdk-3.1
+RUN dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
+RUN $APT_INSTALL ./packages-microsoft-prod.deb \
+   # Update is required because packages-microsoft-prod.deb installation add repositories for dotnet
+   && $APT_UPDATE \
+   && $APT_INSTALL dotnet-sdk-3.1
 
 # Install K6
 RUN $APT_INSTALL gpg-agent \
@@ -75,7 +74,6 @@ RUN mkdir -p /etc/bzt.d \
 ### remove unused pem files
 WORKDIR /root/.bzt/python-packages/3.10.6/gevent/tests
 RUN rm -rf *.pem
-
 
 # Fix npm vulnerabilites
 WORKDIR /root/.bzt/selenium-taurus/wdio/node_modules/recursive-readdir
