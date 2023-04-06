@@ -1,0 +1,33 @@
+---
+services:
+#- virtual-display
+- module: shellexec
+  prepare:
+  - command: python3 -m http.server 8000
+    background: true
+  - command: sleep 900 && exit 1  # this will make it interrupt in case it hangs
+    background: true
+  #check:
+  #- command: ps auxff > processlist.txt
+  #  cwd: artifacts-dir
+
+reporting:
+- module: passfail
+  criteria:
+  - fail>0
+
+---
+# all of load-style executors
+execution:
+- executor: gatling  # Gatling
+  concurrency: 1
+  hold-for: 10s
+  iterations: 10
+  scenario:
+    properties:
+      dangerous: "I F S"
+    requests:
+      - url: http://localhost:8000/
+        label: Gatling
+
+
